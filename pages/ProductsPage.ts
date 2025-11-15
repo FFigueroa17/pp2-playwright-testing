@@ -15,7 +15,7 @@ export class ProductsPage {
    */
   constructor(page: Page) {
     this.page = page;
-    this.title = page.locator(".product_label");
+    this.title = page.locator("span.title");
     this.productItems = page.locator(".inventory_item");
   }
 
