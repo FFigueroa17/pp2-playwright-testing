@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { Page, Locator, expect } from "@playwright/test";
 
 /**
  * Page Object Model for the Login page.
@@ -37,5 +37,28 @@ export class LoginPage {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
+  }
+
+  /**
+   * Gets the error message displayed on the login page.
+   * @returns The error message text, or null if no error is displayed.
+   */
+  async getErrorMessage(): Promise<string | null> {
+    const errorContainer = this.page.locator('[data-test="error"]');
+    const isVisible = await errorContainer.isVisible().catch(() => false);
+    if (!isVisible) return null;
+    return await errorContainer.textContent();
+  }
+
+  /**
+   * Verifies that an error message is displayed.
+   * @param expectedMessage - The expected error message text (optional).
+   */
+  async verifyErrorMessage(expectedMessage?: string) {
+    const errorContainer = this.page.locator('[data-test="error"]');
+    await expect(errorContainer).toBeVisible();
+    if (expectedMessage) {
+      await expect(errorContainer).toContainText(expectedMessage);
+    }
   }
 }
